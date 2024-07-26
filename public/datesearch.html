@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Search by date</h1><br>
+    <label>"enter delivery date</label>
+    <input type="date" name="date" id="date">
+    <button onclick="datesearch()">search</button>
+    <div id="results"></div>
+
+    <script>
+        async function datesearch(){
+            let date = document.getElementById("date").value;
+            let response = await fetch(`/date/${date}`);
+            let data = await response.json();
+            //data=JSON.stringify(data)
+            let results = document.getElementById("results");
+            results.innerHTML = "";
+            for(let i = 0; i < data.length; i++){
+                results.innerHTML +=JSON.stringify(data[i])+"<br>";
+                }
+
+
+        }
+    </script>
+    
+</body>
+</html>

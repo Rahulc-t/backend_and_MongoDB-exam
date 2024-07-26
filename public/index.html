@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>PARCEL TRACKING</h1>
+   
+    <label for="parcelid">PARCEL ID:</label>
+    <input type="text" name="" id="parcelid"><br>
+    <label for="sendername">SENDER NAME:</label>
+    <input type="text" name="" id="sendername"><br>
+    <label for="revicername">RECIVER NAME:</label>
+    <input type="text" name="" id="revicername"><br>
+    <label for="dispatchdate">DISPATCH DATE:</label>
+    <input type="date" name="" id="dispatchdate"><br>
+    <label for="deliverydate">DELIVERY DATE</label>
+    <input type="date" name="" id="deliverydate"><br>
+    <button onclick="addparcel()">submit</button>
+    <hr>
+    <a href="./datesearch.html">search by date</a>
+    <hr>
+
+    <div id="List"></div>
+
+    <script>
+       
+        displayall()
+        async function addparcel(){
+            const parcelid = document.getElementById("parcelid").value;
+        const sendername = document.getElementById("sendername").value;
+        const revicername = document.getElementById("revicername").value;
+        const dispatchdate = document.getElementById("dispatchdate").value;
+        const deliverydate = document.getElementById("deliverydate").value;
+            const data = {
+                parcelid: parcelid,
+                sendername: sendername,
+                recivername: revicername,
+                dispatchdate: dispatchdate,
+                deliverydate: deliverydate
+                }
+                try{
+                await fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                        })
+                        .then(window.location.href="./submit.html")
+                        console.log(data)
+                }catch(error){
+                    console.log(error)
+                }
+
+        }
+
+       async function displayall(){
+        let list=document.getElementById("List")
+        list.innerHTML=''
+        try{
+                await fetch('/view-all')
+                .then(res=>res.json())
+                .then(data=>{
+                
+                for(let i=0;i<data.length;i++){
+                    let li=document.createElement("li")
+                    JSON.stringify(data)
+                    console.log(data[i])
+                    li.innerHTML=JSON.stringify (data[i].parcelid)+"<br>"+JSON.stringify (data[i].sendername)+"<br>"+JSON.stringify (data[i].recivername)
+                    let edit=document.createElement("button")
+                    edit.textContent='edit'
+                    edit.classList.add('edits')
+                    edit.onclick=async function(){
+                        //let temp=data[i]
+                        newsend=prompt("enter new task:",data[i].sendername)
+                        newrecive=prompt("enter new task:",data[i].recivername)
+                        newdispatch=prompt("enter new task:",data[i].dispatchdate)
+                        newdelivery=prompt("enter new task:",data[i].deliverydate)
+                        let data1={
+
+                            parcelid: data[i].parcelid,
+                            sendername: newsend,
+                            recivername: newrecive,
+                            dispatchdate: newdispatch,
+                            deliverydate: newdelivery
+
+                        }
+                    //     await fetch(`cancel-parcel/${data[i].parcelid}`,{
+                    //         method:"DELETE",
+                    //         headers:{
+                    //             "Content-Type":"application/json"
+                    //             }
+                    //             })
+                    //     await fetch('/', {
+                    // method: 'POST',
+                    // headers: {
+                    //     'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify(data1)
+                    //     })
+
+
+                        let temp= data[i].parcelid
+                        try{
+                        await fetch(`edit-parcel/${temp}`,{
+                            method:"PUT",
+                            headers:{
+                                "Content-Type":"application/json"
+                                },
+                                
+                                body:JSON.stringify(data1)
+                        })
+                        
+                        .then(console.log("updated"))
+                        console.log(data1);
+                    }catch(error){
+                        console.log(error)
+                    }
+
+                        displayall()
+                        
+                        
+                    }
+                    let deleteBtn=document.createElement("button")
+                    deleteBtn.textContent="delete"
+                    deleteBtn.classList.add('dels')
+                    deleteBtn.onclick=function(){
+
+                        fetch(`cancel-parcel/${data[i].parcelid}`,{
+                            method:"DELETE",
+                            headers:{
+                                "Content-Type":"application/json"
+                                }
+                                })
+                                .then(console.log("deleted"))
+                                displayall()
+                                }
+                                li.append(edit,deleteBtn)
+                                list.append(li)
+                                
+                    
+                }
+            })
+                 
+
+                
+            }catch(error){
+                    console.log(error)
+                }
+
+       }
+    </script>
+    
+</body>
+</html>
