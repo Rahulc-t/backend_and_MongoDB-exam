@@ -88,21 +88,6 @@
                             deliverydate: newdelivery
 
                         }
-                    //     await fetch(`cancel-parcel/${data[i].parcelid}`,{
-                    //         method:"DELETE",
-                    //         headers:{
-                    //             "Content-Type":"application/json"
-                    //             }
-                    //             })
-                    //     await fetch('/', {
-                    // method: 'POST',
-                    // headers: {
-                    //     'Content-Type': 'application/json'
-                    //     },
-                    //     body: JSON.stringify(data1)
-                    //     })
-
-
                         let temp= data[i].parcelid
                         try{
                         await fetch(`edit-parcel/${temp}`,{
